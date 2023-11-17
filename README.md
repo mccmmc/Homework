@@ -1,5 +1,5 @@
 # Homework
-task1 - main banch
+task1 - master banch
 
 task2 - task2 banch
 
