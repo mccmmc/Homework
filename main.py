@@ -69,20 +69,20 @@ class Settings(QWidget):
         cursor = conn.cursor()
 
         try:
-            cursor.execute(f"""INSERT OR IGNORE INTO coffees("variety ", degree, 
-                                    "ground/grains", description, price, volume)
-                                        VALUES ('{variety}', '{degree}', '{ground_grains}', 
-                                        '{description}', '{price}', '{volume}');""")
-
-        except sqlite3.OperationalError:
             cursor.execute(f"""UPDATE coffees
-                                        SET "variety "      = '{variety}',
-                                            degree          = '{degree}',
-                                            "ground/grains" = '{ground_grains}',
-                                            description     = '{description}',
-                                            price           = '{price}',
-                                            volume          = '{volume}'
-                                        WHERE ID = '{self.index + 1}'""")
+                                                    SET "variety "      = '{variety}',
+                                                        degree          = '{degree}',
+                                                        "ground/grains" = '{ground_grains}',
+                                                        description     = '{description}',
+                                                        price           = '{price}',
+                                                        volume          = '{volume}'
+                                                    WHERE ID = '{self.index + 1}'""")
+
+        except TypeError:
+            cursor.execute(f"""INSERT OR IGNORE INTO coffees("variety ", degree, 
+            "ground/grains", description, price, volume)
+                                                    VALUES ('{variety}', '{degree}', '{ground_grains}', 
+                                                    '{description}', '{price}', '{volume}');""")
 
         conn.commit()
         self.parent.show_db()
