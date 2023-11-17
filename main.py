@@ -1,18 +1,20 @@
 import sys
 import sqlite3
 
-from PyQt5 import uic
 from PyQt5.QtSql import QSqlDatabase, QSqlTableModel
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget
 
+from UI.main_ui import Ui_MainWindow
+from UI.addEditCoffeeForm import Ui_Form
 
-class Suprematism(QMainWindow):
+
+class Suprematism(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.settings = None
-        self.data_base = 'coffee.sqlite'
+        self.data_base = r'data\coffee.sqlite'
 
-        uic.loadUi('main.ui', self)
+        self.setupUi(self)
 
         self.init_ui()
 
@@ -43,10 +45,10 @@ class Suprematism(QMainWindow):
         self.settings.show()
 
 
-class Settings(QWidget):
+class Settings(QWidget, Ui_Form):
     def __init__(self, index, parent):
         super().__init__()
-        uic.loadUi('addEditCoffeeForm.ui', self)
+        self.setupUi(self)
 
         self.index = index
         self.parent = parent
@@ -69,20 +71,20 @@ class Settings(QWidget):
         cursor = conn.cursor()
 
         try:
-            cursor.execute(f"""INSERT OR IGNORE INTO coffees("variety ", degree, 
-                                    "ground/grains", description, price, volume)
-                                        VALUES ('{variety}', '{degree}', '{ground_grains}', 
-                                        '{description}', '{price}', '{volume}');""")
-
-        except sqlite3.OperationalError:
             cursor.execute(f"""UPDATE coffees
-                                        SET "variety "      = '{variety}',
-                                            degree          = '{degree}',
-                                            "ground/grains" = '{ground_grains}',
-                                            description     = '{description}',
-                                            price           = '{price}',
-                                            volume          = '{volume}'
-                                        WHERE ID = '{self.index + 1}'""")
+                                                    SET "variety "      = '{variety}',
+                                                        degree          = '{degree}',
+                                                        "ground/grains" = '{ground_grains}',
+                                                        description     = '{description}',
+                                                        price           = '{price}',
+                                                        volume          = '{volume}'
+                                                    WHERE ID = '{self.index + 1}'""")
+
+        except TypeError:
+            cursor.execute(f"""INSERT OR IGNORE INTO coffees("variety ", degree, 
+            "ground/grains", description, price, volume)
+                                                    VALUES ('{variety}', '{degree}', '{ground_grains}', 
+                                                    '{description}', '{price}', '{volume}');""")
 
         conn.commit()
         self.parent.show_db()
